@@ -49,4 +49,5 @@ MoveForwardOneTile:
     ; CUSTOM DEPENDENCIES
     ;-----------------------------------------------------------------
 
-.include "AnimateWalkOneTile.asm"
+;.include "lib/AnimateWalkOneTile.asm"
+

@@ -42,4 +42,5 @@ CanMoveForward:
     ; CUSTOM DEPENDENCIES
     ;-----------------------------------------------------------------
 
-.include "GetFrontTile.asm"
+;.include "lib/GetFrontTile.asm"
+

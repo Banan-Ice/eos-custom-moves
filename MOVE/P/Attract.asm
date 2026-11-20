@@ -241,8 +241,8 @@ Attract:
 	;                           FUNCTIONS                             ;
 	;-----------------------------------------------------------------;
 
-.include "lib/BoostSpeedIfNeeded.asm"
 .include "lib/MoveForwardNTiles.asm"
+.include "lib/BoostSpeedIfNeeded.asm"
 .include "lib/IsTargetAlly.asm"
 .include "lib/HasAquaRingStatus.asm"
 

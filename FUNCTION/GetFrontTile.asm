@@ -31,6 +31,6 @@ GetFrontTile:
         add r1,r1,r3         ; front tile Y
 
         ldrh r0,[r0,#0x4]    ; Current X
-        add r0,r0,r12        ; front tile Y
+        add r0,r0,r12        ; front tile X
 
         bx lr

@@ -1,0 +1,68 @@
+; ------------------------------------------------------------------------------
+; Dragon Tail
+; Deals damage to the target, then blows it away in the user's direction!
+; ------------------------------------------------------------------------------
+
+.relativeinclude on
+.nds
+.arm
+
+.definelabel MaxSize, 0x2598
+
+; For EU
+.include "lib/stdlib_eu.asm"
+.include "lib/dunlib_eu.asm"
+.definelabel MoveStartAddress, 0x02330B74
+.definelabel MoveJumpAddress, 0x0233310C
+.definelabel RestoreAllMovePP, 0x2318680
+
+; File creation
+.create "./code_out.bin", 0x02330B74
+	.org MoveStartAddress
+	.area MaxSize
+
+		sub r13,r13,#0x4
+		mov r0,r9
+		mov r1,r4
+		mov r2,r8
+		mov r3,#0x100
+		str r7,[r13]
+		bl DealDamage
+		cmp r0,#0
+		beq @@ret
+		mov r0,r9
+		mov r1,r4
+		mov r2,#0
+		bl RandomChanceUT
+		cmp r0,#0
+		beq @@success
+		mov r0,r9
+		mov r1,r4
+		ldr r2,[r9,#+0xb4]
+		ldrb r2,[r2,#+0x4c]
+		bl BlowAway
+
+@@success:
+		mov r0,#1
+
+        ; ACTION: Restore PP
+        mov r0, r9
+        mov r1, r9
+        mov r2, #10
+        mov r3, #0
+        bl RestoreAllMovePP
+@@ret:
+		mov r10,r0
+		add r13,r13,#0x4
+
+        ; ACTION: Restore PP
+        mov r0, r9
+        mov r1, r9
+        mov r2, #10
+        mov r3, #0
+        bl RestoreAllMovePP
+        
+		b MoveJumpAddress
+		.pool
+	.endarea
+.close

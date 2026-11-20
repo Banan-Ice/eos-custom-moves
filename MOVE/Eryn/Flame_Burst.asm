@@ -26,6 +26,7 @@
 .definelabel MoveStartAddress, 0x02330B74
 .definelabel MoveJumpAddress, 0x0233310C
 .definelabel TryThawTarget, 0x023086A4
+.definelabel PlayEffectAnimationEntityStandard, 0x22E4C98
 
 ; File creation
 .create "./code_out.bin", 0x02330B74
@@ -37,6 +38,7 @@
 	;-----------------------------------------------------------------;
 
         ; Initialize additional targets
+        push {r5,r6}
         mov r5,#0
         mov r6,#0
 
@@ -97,6 +99,10 @@
         cmp r5,#0
         beq @@end_move
 
+		mov r0,r5
+		mov r1, #244
+		bl PlayEffectAnimationEntityStandard
+
         mov r0,r9
         mov r1,r5
         bl TryThawTarget
@@ -131,6 +137,10 @@
         cmp r6,#0
         beq @@end_move
 
+		mov r0,r6
+		mov r1, #244
+		bl PlayEffectAnimationEntityStandard
+
         mov r0,r9
         mov r1,r6
         bl TryThawTarget
@@ -159,6 +169,8 @@
         bl DealMoveDamage
 
 	@@end_move:
+        pop {r5,r6}
+
 		; ACTION: Restore PP
         mov r0,r9
 		bl RestoreAllPPIfNeeded

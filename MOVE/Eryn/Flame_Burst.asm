@@ -37,12 +37,14 @@
 	;                          MOVE EFFECT                            ;
 	;-----------------------------------------------------------------;
 
+FlameBurst:
+
         ; Initialize additional targets
         push {r5,r6}
         mov r5,#0
         mov r6,#0
 
-        ; FIND SECOND TARGET
+        ; Find 2nd target
         mov r0,r4
         mov r1,r4
         mov r2,#0
@@ -53,7 +55,7 @@
         cmp r5,#0
         beq @@apply_effects
 
-        ; FIND THIRD TARGET
+        ; Find 3rd target
         mov r0,r5
         mov r1,r4
         mov r2,r5
@@ -100,7 +102,7 @@
         beq @@end_move
 
 		mov r0,r5
-		mov r1, #244
+		mov r1,#57
 		bl PlayEffectAnimationEntityStandard
 
         mov r0,r9
@@ -138,7 +140,7 @@
         beq @@end_move
 
 		mov r0,r6
-		mov r1, #244
+		mov r1,#57
 		bl PlayEffectAnimationEntityStandard
 
         mov r0,r9
@@ -190,3 +192,10 @@
 		.pool
 	.endarea
 .close
+
+	;-----------------------------------------------------------------;
+	;                        ANIMATION TABLE                          ;
+	;-----------------------------------------------------------------;
+
+; animation_id_2 = 78
+; animation_id_3 = 57

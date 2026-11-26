@@ -1,7 +1,7 @@
 ; ------------------------------------------------------------------------------
 ; LEER
 ; ---
-; [Action]
+; [Bonus Action]
 ; Lowers the target's Def and Sp.Def by one stage.
 ; Front : turns the target around.
 ; Back  : grants Focus Energy to the user.
@@ -101,8 +101,8 @@ Leer:
 .include "lib/BoostSpeedIfNeeded.asm"
 .include "lib/SendTargetMessage.asm"
 
-
 		.pool
+		
 	;-----------------------------------------------------------------;
 	;                            STRING                               ;
 	;-----------------------------------------------------------------;

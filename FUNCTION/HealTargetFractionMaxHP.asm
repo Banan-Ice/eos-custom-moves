@@ -1,8 +1,4 @@
 
-.ifndef TryRestoreHp
-    .definelabel TryRestoreHp, 0x2315CCC
-.endif
-
 HealTargetFractionMaxHP:
     ;-----------------------------------------------------------------
     ; Restores a fraction of the target's maximum HP.
@@ -16,6 +12,7 @@ HealTargetFractionMaxHP:
     ;-----------------------------------------------------------------
 
         push {r4-r6,lr}
+        sub sp,sp,#8
 
         ; Save arguments
         mov r4,r0              ; User
@@ -44,7 +41,10 @@ HealTargetFractionMaxHP:
         ; Restore HP
         mov r0,r4
         mov r1,r5
-        bl TryRestoreHp
+        mov r3,#1
+        str r3,[sp]
+		mov r3,#0
+        bl RaiseHP
 
         b @@end
 
@@ -52,4 +52,6 @@ HealTargetFractionMaxHP:
         mov r0,#0
 
     @@end:
+
+        add sp,sp,#8
         pop {r4-r6,pc}

@@ -40,7 +40,7 @@
 	;                          MOVE EFFECT                            ;
 	;-----------------------------------------------------------------;
 
-StrengthSap:
+Absorb:
 
 		; Check if target is ally or foe
 		mov r0, r9

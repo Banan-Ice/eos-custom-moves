@@ -32,98 +32,72 @@ SpawnAndPickUpItem:
     ; r0 = 0 otherwise
     ;-----------------------------------------------------------------
 
-    push {r4-r6,lr}
-    sub sp,sp,#8
+        push {r4-r6,lr}
+        sub sp,sp,#8
 
-    ; Save arguments
-    mov r4,r0              ; User
-    mov r5,r1              ; Item ID
+        ; Save arguments
+        mov r4,r0              ; User
+        mov r5,r1              ; Item ID
 
-    ;---------------------------------------------------------------
-    ; CHECK CURRENT TILE
-    ;---------------------------------------------------------------
+        ; Get tile under user
+        mov r0,r4
+        bl GetTileAtEntity
+        cmp r0,#0
+        beq @@fail
 
-    ; Get tile under user
-    mov r0,r4
-    bl GetTileAtEntity
+        ; Check if an item or trap already occupies the tile
+        ldr r1,[r0,#0x10]
+        cmp r1,#0
+        bne @@fail
 
-    cmp r0,#0
-    beq @@fail
+        mov r0,#0
+        str r0,[sp]            ; Sticky flag = false
+        str r0,[sp,#4]         ; Check-in-bag flag = false
+        mov r0,r5              ; Item ID
+        ldrh r1,[r4,#0x4]      ; User's X
+        ldrh r2,[r4,#0x6]      ; User's Y
+        mov r3,#0              ; Quantity = 0
+        bl GenerateAndSpawnItem
 
-    ; Check if an item or trap already occupies the tile
-    ldr r1,[r0,#0x10]
-    cmp r1,#0
-    bne @@fail
+        ; Verify item appeared
+        mov r0,r4
+        bl GetTileAtEntity
+        cmp r0,#0
+        beq @@fail
 
-    ;---------------------------------------------------------------
-    ; GENERATE AND SPAWN ITEM
-    ;---------------------------------------------------------------
+        ; Check for newly spawned object
+        ldr r0,[r0,#0x10]
+        cmp r0,#0
+        beq @@fail
 
-    ; Stack arguments
-    mov r0,#0
-    str r0,[sp]            ; Sticky flag = false
-    str r0,[sp,#4]         ; Check-in-bag flag = false
+        ; Check whether user is leader
+        bl GetLeader
+        cmp r0,r4
+        beq @@leader_pickup
 
-    ; Item ID
-    mov r0,r5
+        ; Non-leader pickup
+        mov r0,r4
+        bl TryNonLeaderItemPickUp
 
-    ; User's coordinates
-    ldrh r1,[r4,#0x4]      ; X
-    ldrh r2,[r4,#0x6]      ; Y
-
-    ; Quantity = 0
-    mov r3,#0
-
-    bl GenerateAndSpawnItem
-
-    ;---------------------------------------------------------------
-    ; VERIFY ITEM APPEARED
-    ;---------------------------------------------------------------
-
-    ; Get user's tile again
-    mov r0,r4
-    bl GetTileAtEntity
-
-    cmp r0,#0
-    beq @@fail
-
-    ; Check for newly spawned object
-    ldr r0,[r0,#0x10]
-    cmp r0,#0
-    beq @@fail
-
-    ;---------------------------------------------------------------
-    ; SELECT PICKUP FUNCTION
-    ;---------------------------------------------------------------
-
-    ; Check whether user is leader
-    bl GetLeader
-
-    cmp r0,r4
-    beq @@leader_pickup
-
-    ; Non-leader pickup
-    mov r0,r4
-    bl TryNonLeaderItemPickUp
-
-    b @@success
+        b @@success
 
 @@leader_pickup:
 
-    ; Position pointer
-    add r0,r4,#0x4
-
-    ; Log pickup failure
-    mov r1,#1
-    bl TryLeaderItemPickUp
+        add r0,r4,#0x4      ; Position pointer
+        mov r1,#1
+        bl TryLeaderItemPickUp
 
 @@success:
-    mov r0,#1
-    b @@end
+
+        mov r0,#1
+        b @@end
 
 @@fail:
-    mov r0,#0
+
+        mov r0,#0
+        b @@end
 
 @@end:
-    add sp,sp,#8
-    pop {r4-r6,pc}
+
+        add sp,sp,#8
+        pop {r4-r6,pc}
